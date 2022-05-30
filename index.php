@@ -64,6 +64,31 @@ if(mysqli_query($link, $sql)){
     echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 }
 
+// first query to run on initial load of the page
+$query = 'SELECT * FROM editcount ORDER BY edit_id where username = $username AND title=$title DESC LIMIT 5  ';
+
+
+
+if(mysqli_query($link, $query)){
+// query get the last row from the initial  load and query the next 5 rows
+   $query_sql = 'SELECT username, title FROM editcount WHERE ' .buildWhereCondition( $username, $title ) .'ORDER BY username, title LIMIT 5;';
+   $data = mysqli_query($link, $query_sql);
+   echo $data;
+} else{
+    echo "ERROR: Could not able to execute $query. " . mysqli_error($link);
+}
+
+/**
+* @param {string} $username
+* @param {string} $title
+* @return {string}
+*/
+function buildWhereCondition( $username, $title ) {
+  return  "username = '.$username.' AND  title= '.$title.'";
+}
+
 
 // Close connection
 mysqli_close($link);
+
+?>
